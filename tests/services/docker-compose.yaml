@@ -1,0 +1,90 @@
+version: "3.8"
+services:
+    app:
+        build:
+            context: ./app
+            dockerfile: Dockerfile
+        container_name: app
+        hostname: app
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:8080"]
+            interval: 2s
+            timeout: 10s
+            retries: 3
+            start_period: 2s
+        labels:
+            docker.healthcheck: "true"
+        deploy:
+            replicas: 1
+            restart_policy:
+                condition: on-failure
+                max_attempts: 5
+        networks:
+            - infrastructure
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "200k"
+                max-file: "2"
+    nginx1:
+        container_name: nginx1
+        hostname: nginx1
+        image: nginx
+        networks:
+            - infrastructure
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "200k"
+                max-file: "2"
+    nginx2:
+        container_name: nginx2
+        hostname: nginx2
+        image: nginx
+        labels: 
+            docker.healthcheck: "false"
+        networks:
+            - infrastructure
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "200k"
+                max-file: "2"
+    nginx3:
+        container_name: nginx3
+        hostname: nginx3
+        image: nginx
+        labels: 
+            docker.healthcheck: "true"
+        networks:
+            - infrastructure
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "200k"
+                max-file: "2"
+    docker-healthcheck: 
+        image: samuray/docker-healthcheck:testing
+        container_name: docker-healthcheck
+        hostname: docker-healthcheck
+        deploy:
+            replicas: 1
+            restart_policy:
+                condition: on-failure
+                max_attempts: 5
+        networks:
+            - infrastructure
+        volumes: 
+            - "/var/run/docker.sock:/var/run/docker.sock"
+            - "./data/config.toml:/docker-healthcheck/config.toml"
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "200k"
+                max-file: "2"
+
+networks:
+    infrastructure:
+        external: false
+        driver: bridge
+        name: infrastructure

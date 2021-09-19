@@ -1,6 +1,8 @@
-import { TFastifySmallLoggerConfig } from "fastify-small-logger";
+import { IFastifySmallLoggerConfig } from "fastify-small-logger";
+import { IDockerConnectorConfig } from "./docker-connector";
+import { IDockerHealthcheckConfig } from "./docker-healthcheck";
 
-export type TApiServerConfig = {
+export type IApiServerConfig = {
     enable: boolean
     port: number
     hostname: string
@@ -13,6 +15,8 @@ export type TApiServerConfig = {
 }
 
 export interface IAppConfig {
-    logger: TFastifySmallLoggerConfig
-    api: TApiServerConfig
+    logger: IFastifySmallLoggerConfig
+    api: IApiServerConfig
+    docker: IDockerConnectorConfig
+    healthcheck: IDockerHealthcheckConfig
 }

@@ -1,9 +1,9 @@
 {
-    "name": "template",
-    "version": "0.0.1",
-    "description": "Template for nodejs app with fastify",
+    "name": "docker-healthcheck",
+    "version": "0.1.1",
+    "description": "",
     "main": "app.js",
-    "docker_image": "samuray/template",
+    "docker_image": "samuray/docker-healthcheck",
     "scripts": {
         "prepare": "rimraf ./.husky && husky install && npm run prepare:commitlint",
         "prepare:commitlint": "npx husky add .husky/commit-msg \"npx --no-install commitlint --config _common/configs/commitlint.js --edit $1 --verbose\"",
@@ -18,31 +18,33 @@
         "test:e2e:start_server": "ts-node ./src/app.ts --config ./tests/e2e/config.toml",
         "test:e2e:testing": "jest --config ./tests/e2e.config.json",
         "test": "npm run test:e2e",
-        "docker:build": "npm run build && files-copier -e docker:build && node ./docker-build/build.js",
+        "docker:build": "npm run build && files-copier -e docker:build && node ./docker-build/build.js && node ./docker-build/testing_tag.js",
         "docker:push:version": "node ./docker-build/push_version.js",
         "docker:push:latest": "node ./docker-build/push_latest.js",
-        "docker:tag": "node ./docker-build/tag.js",
-        "docker": "npm run docker:build && npm run docker:tag && npm run docker:push:version && npm run docker:push:latest"
+        "docker:latest_tag": "node ./docker-build/latest_tag.js",
+        "docker": "npm run docker:build && npm run docker:latest_tag && npm run docker:push:version && npm run docker:push:latest"
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/practic-report/template.git"
+        "url": "git+https://github.com/samurayii/docker-healthcheck.git"
     },
     "keywords": [
-        "typescript",
-        "fastify",
-        "template"
+        "docker",
+        "healthcheck",
+        "devops"
     ],
     "author": "Nuzhnov A.A.",
     "license": "GNU GPLv3",
     "bugs": {
-        "url": "https://github.com/practic-report/template/issues"
+        "url": "https://github.com/samurayii/docker-healthcheck/issues"
     },
-    "homepage": "https://github.com/practic-report/template.git#readme",
+    "homepage": "https://github.com/samurayii/docker-healthcheck.git#readme",
     "devDependencies": {
         "@commitlint/cli": "^13.1.0",
         "@types/chai": "^4.2.21",
         "@types/chalk": "^2.2.0",
+        "@types/cron": "^1.7.3",
+        "@types/dockerode": "^3.2.7",
         "@types/jest": "^27.0.1",
         "@types/node": "^16.9.2",
         "@types/node-fetch": "^2.5.12",
@@ -114,6 +116,8 @@
     "dependencies": {
         "chalk": "^4.1.2",
         "commander": "^8.2.0",
+        "cron": "^1.8.2",
+        "dockerode": "^3.3.1",
         "fastify-helpers": "^0.2.6",
         "fastify-small-logger": "^1.7.9",
         "json-from-default-schema": "^1.0.0",

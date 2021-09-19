@@ -4,19 +4,19 @@
         "logger": {
             "type": "object",
             "default": {},
-            "env": "TEMPLATE_LOGGER",
+            "env": "DOCKER_HEALTHCHECK_LOGGER",
             "properties": {
                 "name": {
                     "type": "string",
                     "default": "",
-                    "env": "TEMPLATE_LOGGER_NAME",
+                    "env": "DOCKER_HEALTHCHECK_LOGGER_NAME",
                     "minLength": 0,
                     "maxLength": 32
                 },
                 "levels": {
                     "type": "array",
                     "default": ["fatal","info","error","warn","debug","trace"],
-                    "env": "TEMPLATE_LOGGER_LEVELS",
+                    "env": "DOCKER_HEALTHCHECK_LOGGER_LEVELS",
                     "items": {
                         "type": "string",
                         "enum": ["fatal","info","error","warn","debug","trace"]
@@ -27,23 +27,23 @@
                 "bindings": {
                     "type": "object",
                     "default": {},
-                    "env": "TEMPLATE_LOGGER_BINDINGS"
+                    "env": "DOCKER_HEALTHCHECK_LOGGER_BINDINGS"
                 },
                 "output": {
                     "type": "object",
                     "default": {},
-                    "env": "TEMPLATE_LOGGER_OUTPUT",
+                    "env": "DOCKER_HEALTHCHECK_LOGGER_OUTPUT",
                     "properties": {
                         "timestamp": {
                             "type": "string",
                             "default": "full",
-                            "env": "TEMPLATE_LOGGER_OUTPUT_TIMESTAMP",
+                            "env": "DOCKER_HEALTHCHECK_LOGGER_OUTPUT_TIMESTAMP",
                             "enum": ["full","short","unix","none"]
                         },
                         "levels": {
                             "type": "array",
                             "default": ["fatal","info","error","warn","debug","trace"],
-                            "env": "TEMPLATE_LOGGER_OUTPUT_LEVELS",
+                            "env": "DOCKER_HEALTHCHECK_LOGGER_OUTPUT_LEVELS",
                             "items": {
                                 "type": "string",
                                 "enum": ["fatal","info","error","warn","debug","trace"]
@@ -54,7 +54,7 @@
                         "bindings": {
                             "type": "string",
                             "default": "no-wrapper",
-                            "env": "TEMPLATE_LOGGER_OUTPUT_BINDINGS",
+                            "env": "DOCKER_HEALTHCHECK_LOGGER_OUTPUT_BINDINGS",
                             "enum": ["square","bracket","none","no-wrapper"]
                         }
                     },
@@ -75,24 +75,24 @@
         "api": {
             "type": "object",
             "default": {},
-            "env": "TEMPLATE_API",
+            "env": "DOCKER_HEALTHCHECK_API",
             "properties": {
                 "enable": {
                     "type": "boolean",
                     "default": false,
-                    "env": "TEMPLATE_API_ENABLE"
+                    "env": "DOCKER_HEALTHCHECK_API_ENABLE"
                 },
                 "hostname": {
                     "type": "string",
                     "default": "0.0.0.0",
                     "minLength": 1,
                     "maxLength": 64,
-                    "env": "TEMPLATE_API_HOSTNAME"
+                    "env": "DOCKER_HEALTHCHECK_API_HOSTNAME"
                 },
                 "port": {
                     "type": "integer",
                     "default": 3001,
-                    "env": "TEMPLATE_API_PORT",
+                    "env": "DOCKER_HEALTHCHECK_API_PORT",
                     "minimum": 1
                 },
                 "prefix": {
@@ -100,37 +100,37 @@
                     "default": "/api",
                     "minLength": 0,
                     "maxLength": 32,
-                    "env": "TEMPLATE_API_PREFIX",
+                    "env": "DOCKER_HEALTHCHECK_API_PREFIX",
                     "pattern": "^(\/[a-zA-Z]{1}|)[-a-zA-Z0-9\/]{0,31}$"
                 },
                 "backlog": {
                     "type": "integer",
                     "default": 511,
-                    "env": "TEMPLATE_API_BACKLOG",
+                    "env": "DOCKER_HEALTHCHECK_API_BACKLOG",
                     "minimum": 1
                 },
                 "connection_timeout": {
                     "type": "integer",
                     "default": 0,
-                    "env": "TEMPLATE_API_CONNECTION_TIMEOUT",
+                    "env": "DOCKER_HEALTHCHECK_API_CONNECTION_TIMEOUT",
                     "minimum": 0
                 },
                 "keep_alive_timeout": {
                     "type": "integer",
                     "default": 5000,
-                    "env": "TEMPLATE_API_KEEP_ALIVE_TIMEOUT",
+                    "env": "DOCKER_HEALTHCHECK_API_KEEP_ALIVE_TIMEOUT",
                     "minimum": 1
                 },
                 "body_limit": {
                     "type": "integer",
                     "default": 1048576,
-                    "env": "TEMPLATE_API_BODY_LIMIT",
+                    "env": "DOCKER_HEALTHCHECK_API_BODY_LIMIT",
                     "minimum": 1
                 },
                 "trust_proxy": {
                     "type": "boolean",
                     "default": false,
-                    "env": "TEMPLATE_API_TRUST_PROXY"
+                    "env": "DOCKER_HEALTHCHECK_API_TRUST_PROXY"
                 }
             },
             "required": [
@@ -144,10 +144,128 @@
                 "body_limit",
                 "trust_proxy"
             ]
+        },
+        "healthcheck": {
+            "type": "object",
+            "default": {},
+            "env": "DOCKER_HEALTHCHECK_HEALTHCHECK",
+            "properties": {
+                "enable": {
+                    "type": "boolean",
+                    "default": false,
+                    "enum": [true,false],
+                    "env": "DOCKER_HEALTHCHECK_HEALTHCHECK_ENABLE"
+                },
+                "label": {
+                    "type": "string",
+                    "default": "docker.healthcheck",
+                    "minLength": 1,
+                    "maxLength": 64,
+                    "env": "DOCKER_HEALTHCHECK_HEALTHCHECK_HOSTNAME"
+                },
+                "cron": {
+                    "type": "object",
+                    "default": {},
+                    "env": "DOCKER_HEALTHCHECK_HEALTHCHECK_CRON",
+                    "properties": {
+                        "interval": {
+                            "type": "string",
+                            "default": "*/10 * * * * *",
+                            "minLength": 1,
+                            "maxLength": 64,
+                            "env": "DOCKER_HEALTHCHECK_HEALTHCHECK_CRON_INTERVAL"
+                        },
+                        "time_zone": {
+                            "type": "string",
+                            "default": "Europe/Moscow",
+                            "minLength": 1,
+                            "maxLength": 64,
+                            "env": "DOCKER_HEALTHCHECK_HEALTHCHECK_CRON_TIME_ZONE"
+                        }
+                    },
+                    "required": [
+                        "interval",
+                        "time_zone"
+                    ]
+                }
+            },
+            "required": [
+                "enable",
+                "label",
+                "cron"
+            ]
+        },
+        "docker": {
+            "type": "object",
+            "default": {},
+            "env": "DOCKER_HEALTHCHECK_DOCKER",
+            "properties": {
+                "protocol": {
+                    "type": "string",
+                    "default": "http",
+                    "enum": ["http","https","ssh"],
+                    "env": "DOCKER_HEALTHCHECK_DOCKER_PROTOCOL"
+                },
+                "host": {
+                    "type": "string",
+                    "default": "localhost",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "env": "DOCKER_HEALTHCHECK_DOCKER_HOST"
+                },
+                "port": {
+                    "type": "integer",
+                    "default": 2375,
+                    "env": "DOCKER_HEALTHCHECK_DOCKER_PORT",
+                    "minimum": 1
+                },
+                "ca": {
+                    "default": "",
+                    "type": "string",
+                    "minLength": 0,
+                    "env": "DOCKER_HEALTHCHECK_DOCKER_CA"
+                },
+                "cert": {
+                    "default": "",
+                    "type": "string",
+                    "minLength": 0,
+                    "env": "DOCKER_HEALTHCHECK_DOCKER_CERT"
+                },
+                "key": {
+                    "default": "",
+                    "type": "string",
+                    "minLength": 0,
+                    "env": "DOCKER_HEALTHCHECK_DOCKER_KEY"
+                },
+                "version": {
+                    "type": "string",
+                    "default": "v1.38",
+                    "minLength": 1,
+                    "maxLength": 64,
+                    "env": "DOCKER_HEALTHCHECK_DOCKER_VERSION"
+                },
+                "socket": {
+                    "type": "string",
+                    "minLength": 0,
+                    "maxLength": 256,
+                    "env": "DOCKER_HEALTHCHECK_DOCKER_SOCKET"
+                }
+            },
+            "required": [
+                "version",
+                "host",
+                "port",
+                "key",
+                "cert",
+                "ca",
+                "protocol"
+            ]
         }
     },
     "required": [
         "logger",
-        "api"
+        "api",
+        "healthcheck",
+        "docker"
     ]
 }

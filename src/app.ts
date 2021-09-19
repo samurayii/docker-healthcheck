@@ -3,6 +3,8 @@ import fastify, { FastifyInstance } from "fastify-helpers";
 import * as chalk from "chalk";
 import { FastifySmallLogger } from "fastify-small-logger";
 import { FastifyLoggerInstance } from "fastify";
+import { DockerConnector } from "./lib/docker-connector";
+import { DockerHealthcheck } from "./lib/docker-healthcheck";
 
 import "./http";
 
@@ -10,11 +12,17 @@ const logger = new FastifySmallLogger(config.logger);
 
 logger.debug(`\nCONFIG:\n${JSON.stringify(config, null, 4)}`);
 
+const docker_connector = new DockerConnector(config.docker, logger.child("docker-connector"));
+const docker_healthcheck = new DockerHealthcheck(config.healthcheck, docker_connector, logger.child("docker-healthcheck"));
+
 const bootstrap = async () => {
 
     try {
 
         let api_server: FastifyInstance;
+        
+        await docker_healthcheck.init();
+        await docker_healthcheck.run();
 
         if (config.api.enable === true) {
 
@@ -40,6 +48,7 @@ const bootstrap = async () => {
 
         const stop_app = async () => {
             await api_server?.close();
+            await docker_healthcheck.close();
             process.exit();
         };
 

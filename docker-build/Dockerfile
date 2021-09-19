@@ -75,18 +75,14 @@ ENV NODE_ENV=production
 ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
 ENV PATH=$PATH:/home/node/.npm-global/bin
 
-WORKDIR /template
+WORKDIR /docker-healthcheck
 
 ENTRYPOINT [ "node" ]
 CMD [ "app.js", "--config", "config.toml" ]
 
-COPY app /template
-COPY config.toml /template/config.toml
+COPY app /docker-healthcheck
+COPY config.toml /docker-healthcheck/config.toml
 
-RUN chown -R node:node /template
-
-USER node
-
-RUN cd /template && \
+RUN cd /docker-healthcheck && \
     npm ci && \
     node app.js -v

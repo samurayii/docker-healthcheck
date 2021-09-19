@@ -1,0 +1,15 @@
+[logger]
+    levels = ["fatal","info","error","warn","debug","trace"]
+    [logger.output]
+        timestamp = "full"
+        levels = ["fatal","info","error","warn","debug","trace"]
+        bindings = "bracket"
+
+[api]
+    enable = true
+
+[healthcheck]
+    enable = true
+
+[docker]
+    socket = "/var/run/docker.sock"

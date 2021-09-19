@@ -15,7 +15,24 @@
     port = 3001                 # порт
     backlog = 511               # очередь баклога
     prefix = "/api"             # префикс
-    connection_timeout = 0      # таймаут сервера в милисекундах
-    keep_alive_timeout = 5000   # таймаут keep-alive сервера в милисекундах
+    connection_timeout = 0      # таймаут сервера в миллисекундах
+    keep_alive_timeout = 5000   # таймаут keep-alive сервера в миллисекундах
     body_limit = 1048576        # максимальный размер тела запроса в байтах
-    trust_proxy = false         # доверие proxy закголовку
+    trust_proxy = false         # доверие proxy заголовку
+
+[healthcheck]                       # настройки проверки здоровья
+    enable = false                  # активация
+    label = "docker.healthcheck"    # метка поиска
+    [healthcheck.cron]              # настройка cron
+        interval = "*/10 * * * * *" # интервал
+        time_zone = "Europe/Moscow" # временная зона
+    
+[docker]                                # настройки докера
+    host = "localhost"                  # хост подключения, игнорируется если указан socket
+    port = 2375                         # порт подключения, игнорируется если указан socket
+    protocol = "http"                   # протокол http, https и ssh
+    ca = ""                             # путь файла до файла CA, игнорируется если указан socket
+    cert = ""                           # путь до файла сертификата, игнорируется если указан socket
+    key = ""                            # путь до файла ключа, игнорируется если указан socket
+    version = "v1.38"                   # версия api docker
+    #socket = "/var/run/docker.sock"    # путь к сокету docker (если указан, то ключи host, port и protocol игнорируются)
